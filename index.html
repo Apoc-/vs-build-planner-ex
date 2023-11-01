@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Primary Meta Tags -->
     <title>Vampire Survivors - Build Planner</title>
-    <meta name="title" content="Vampire Survivors - Build Planner" />
-    <meta name="description" content="Vampire Survivors - Build Planner" />
+    <meta name="title" content="Vampire Survivors - Build Planner Ex (Apoc- Fork)" />
+    <meta name="description" content="Vampire Survivors - Build Planner (Apoc- Fork)" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://danmer.github.io/vs-build-planner" />
+    <meta property="og:url" content="https://apoc-.github.io/vs-build-planner-ex" />
     <meta property="og:title" content="Vampire Survivors - Build Planner" />
-    <meta property="og:description" content="Vampire Survivors - Build Planner" />
-    <meta property="og:image" content="https://danmer.github.io/vs-build-planner/img/preview.jpg" />
+    <meta property="og:description" content="Vampire Survivors - Build Planner Ex (Apoc- Fork)" />
+    <meta property="og:image" content="https://apoc-.github.io/vs-build-planner-ex/img/preview.jpg" />
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://danmer.github.io/vs-build-planner" />
-    <meta property="twitter:title" content="Vampire Survivors - Build Planner" />
-    <meta property="twitter:description" content="Vampire Survivors - Build Planner" />
-    <meta property="twitter:image" content="https://danmer.github.io/vs-build-planner/img/preview.jpg" />
+    <meta property="twitter:url" content="https://apoc-.github.io/vs-build-planner-ex" />
+    <meta property="twitter:title" content="Vampire Survivors - Build Planner Ex (Apoc- Fork)" />
+    <meta property="twitter:description" content="Vampire Survivors - Build Planner Ex (Apoc- Fork)" />
+    <meta property="twitter:image" content="https://apoc-.github.io/vs-build-planner-ex/img/preview.jpg" />
     <!-- Styles -->
     <link rel="stylesheet" href="./icons.css" />
     <style>
@@ -52,7 +52,7 @@
         font-size: 1.6em;
       }
       section {
-        margin: 0.5em;
+        margin: 0.2em;
       }
       .pixels {
         image-rendering: pixelated;
@@ -117,6 +117,8 @@
       }
       .selected {
         background-color: #36f;
+        outline-width: 0.15em;
+        outline-style: solid;
       }
       .green {
         background-color: #3c3;
@@ -348,8 +350,34 @@
       .button .enabled {
         color: #6c6;
       }
+      .button.disabled {
+        color: #c66;
+      }
+      .button.enabled {
+        color: #6c6;
+      }
       .button .modifier {
         color: #6cc;
+      }
+
+      .button.small {
+        font-size: 1em;
+        margin: 0.1em;
+        padding: 0.5em;
+      }
+
+      .button .arrow {
+        display: inline-block;
+        margin-right: 5px;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid currentColor; /* Arrow pointing down */
+        vertical-align: middle;
+      }
+
+      .button .arrow.up {
+        border-top: none;
+        border-bottom: 5px solid currentColor; /* Arrow pointing up */
       }
 
       /* Footer */
@@ -538,8 +566,9 @@
         </div>
 
         <!-- Characters -->
-        <section style="max-width: 85em">
-          <div class="objects">
+        <span class="button small" :class="(config.displayCharacters ? 'enabled' : 'disabled')" @click="config.displayCharacters = !config.displayCharacters"><span class="arrow" :class="(config.displayCharacters ? 'up' : 'down')"></span>Characters</span>      
+        <section style="max-width: 80em">    
+          <div v-if="config.displayCharacters" class="objects">
             <div v-for="character in characters" :data-id="character.id" class="object character" :class="{selected: selectedCharacter.id === character.id, special: character.special, dlc: character.dlc, dlc2: character.dlc2}" :title="character.title" @click="toggleItem(character)" @mouseenter="onMouseEnter(character)" @mouseleave="onMouseLeave(character)">
               <div class="icon" :class="`icon-${character.id}`"></div>
               <div class="items">
@@ -550,9 +579,10 @@
           </div>
         </section>
 
-        <!-- Weapons -->
+        <!-- Weapons -->  
+        <span class="button small" :class="(config.displayWeapons ? 'enabled' : 'disabled')" @click="config.displayWeapons = !config.displayWeapons"><span class="arrow" :class="(config.displayWeapons ? 'up' : 'down')"></span>Weapons</span>      
         <section style="max-width: 80em">
-          <div class="objects">
+          <div v-if="config.displayWeapons" class="objects">
             <div v-for="weapon in weapons" :data-id="weapon.id" class="object weapon" :class="{selected: weapon.selected, special: weapon.special, dlc: weapon.dlc, dlc2: weapon.dlc2, center: !config.combinations && !config.titles && !config.impacts}" :title="weapon.title" @click="toggleItem(weapon)" @mouseenter="onMouseEnter(weapon)" @mouseleave="onMouseLeave()">
               <div class="icon" :class="`icon-${weapon.id}`"></div>
               <div v-if="config.impacts" class="impacts">
@@ -583,8 +613,9 @@
         </section>
 
         <!-- Passives -->
+        <span class="button small" :class="(config.displayPassives ? 'enabled' : 'disabled')" @click="config.displayPassives = !config.displayPassives"><span class="arrow" :class="(config.displayPassives ? 'up' : 'down')"></span>Passives</span>
         <section style="max-width: 55em">
-          <div class="objects">
+          <div v-if="config.displayPassives" class="objects">
             <div v-for="passive in passives" :data-id="passive.id" class="object passive" :class="{selected: passive.selected, special: passive.special, dlc: passive.dlc, dlc2: passive.dlc2, center: !config.combinations && !config.titles && !config.impacts}" :title="passive.title" @click="toggleItem(passive)" @mouseenter="onMouseEnter(passive)" @mouseleave="onMouseLeave()">
               <div class="icon" :class="`icon-${passive.id}`"></div>
               <div v-if="config.impacts" class="impacts">
@@ -1347,7 +1378,18 @@
           }
 
           function useConfig(storageKey = 'vs-build') {
-            const defaultConfig = { impacts: true, pixels: true, titles: true, evolutions: false, combinations: true, size: 1, version: 2 }
+            const defaultConfig = { 
+              impacts: true, 
+              pixels: true, 
+              titles: true, 
+              evolutions: false, 
+              combinations: true, 
+              size: 1, 
+              version: 2, 
+              displayCharacters: true, 
+              displayWeapons: true, 
+              displayPassives: true 
+            }
 
             const userConfig = loadUserConfig()
 
@@ -1409,23 +1451,5 @@
         },
       }).mount('#app')
     </script>
-
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript">
-      ;(function (m, e, t, r, i, k, a) {
-        m[i] =
-          m[i] ||
-          function () {
-            ;(m[i].a = m[i].a || []).push(arguments)
-          }
-        m[i].l = 1 * new Date()
-        ;(k = e.createElement(t)), (a = e.getElementsByTagName(t)[0]), (k.async = 1), (k.src = r), a.parentNode.insertBefore(k, a)
-      })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym')
-      ym(88260279, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true, trackHash: true })
-    </script>
-    <noscript>
-      <div><img src="https://mc.yandex.ru/watch/88260279" style="position: absolute; left: -9999px" alt="" /></div>
-    </noscript>
-    <!-- /Yandex.Metrika counter -->
   </body>
 </html>
